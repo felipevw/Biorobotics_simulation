@@ -27,5 +27,5 @@ POSITIONS_REF = [0, 72;
                 58, -12.1];
 FULL = 0;
 FOOT = 1;
-
+% dupa
 output2 = calcGlobalPose(ANGLES(1, 2:end), 1, FOOT, POSITIONS_REF)
