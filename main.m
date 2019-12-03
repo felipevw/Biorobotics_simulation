@@ -28,4 +28,4 @@ POSITIONS_REF = [0, 72;
 FULL = 0;
 FOOT = 1;
 
-output2 = calcGlobalPose(ANGLES(1, 2:end), 1, FOOT, POSITIONS_REF)
+output2 = calcGlobalPose(ANGLES(1, 2:end), true, FOOT, POSITIONS_REF)
