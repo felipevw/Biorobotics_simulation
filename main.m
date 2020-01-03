@@ -6,15 +6,9 @@
 % Mario Terres Diaz
 % Jakub Pawel Galik
 
-% Main variables
-clear variables;
-
-
+% Variables definition
 dataset = load("2DRobot_JointAngles.mat");
-
-
 ANGLES = dataset.JointAngles;
-clear dataset;
 POSITIONS_REF = [0, 72; 
                 0, -72; 
                 0, -122.5; 
@@ -25,7 +19,14 @@ POSITIONS_REF = [0, 72;
                 -14, -12.1; 
                 58, -12.1; 
                 58, -12.1];
-FULL = 0;
-FOOT = 1;
+                       
+       
+            
 
-output2 = calcGlobalPose(ANGLES(1, 2:end), true, FOOT, POSITIONS_REF)
+output2 = calcGlobalPose(ANGLES(1, 2:end), 1, POSITIONS_REF);
+
+
+
+
+
+
