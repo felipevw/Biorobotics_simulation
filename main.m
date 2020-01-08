@@ -20,10 +20,14 @@ POSITIONS_REF = [0, 72;
                 58, -12.1; 
                 58, -12.1];
                        
-       
-            
-
-output2 = calcGlobalPose(ANGLES(1, 2:end), 1, POSITIONS_REF);
+figure
+for idx = 1:size(ANGLES,1)
+    output = calcGlobalPose1(ANGLES(idx, 2:end), POSITIONS_REF);
+    
+    visualize(output);
+    
+    pause(0.05);
+end
 
 
 
