@@ -21,7 +21,7 @@ POSITIONS_REF = [0, 72;
                 58, -12.1];
                        
 for idx = 1:size(ANGLES,1)
-    output = calcGlobalPose1(ANGLES(idx, 2:end), POSITIONS_REF);
+    output = calcGlobalPoseLeft(ANGLES(idx, 2:end), POSITIONS_REF);
     
     visualize(output);
     
