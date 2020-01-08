@@ -20,7 +20,6 @@ POSITIONS_REF = [0, 72;
                 58, -12.1; 
                 58, -12.1];
                        
-figure
 for idx = 1:size(ANGLES,1)
     output = calcGlobalPose1(ANGLES(idx, 2:end), POSITIONS_REF);
     
