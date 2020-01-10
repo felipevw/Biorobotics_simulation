@@ -1,4 +1,4 @@
-function visualize(calcGlobalPoseOutput)
+function visualize(calcGlobalPoseOutput, frame)
 
     x = calcGlobalPoseOutput(1, :);
     y = calcGlobalPoseOutput(2, :);
@@ -26,7 +26,7 @@ function visualize(calcGlobalPoseOutput)
     line([x(4) x(11)], [y(4) y(11)])
     line([x(11) x(12)], [y(11) y(12)])
     line([x(11) x(13)], [y(11) y(13)])
-    
+    title(frame)
     axis([-250 250 -50 450])
    
 end
