@@ -19,32 +19,48 @@ POSITIONS_REF = [0, 72;
                 -14, -12.1; 
                 58, -12.1; 
                 58, -12.1];
+COM_REF = [0, 16.4;
+           0, -55;
+           0, -55;
+           2.3, -39;
+           2.3, -39;
+           1.1, -35.8;
+           1.1, -35.8;
+           16.7, -2.4;
+           16.7, -2.4];
+MASS = [ 0.696 0.091 0.091 0.241 0.241 0.192 0.192 0.149 0.149 ];
  
 output_positions = [];
+com_positions = [];
 stateLeft = true;
+switchFrames = 1;
 dang = ANGLES(:,6) - ANGLES(:,7) - 0.05;
 figure
 % The ANGLES(1, 2:end) is taking the first frame
 for idx = 1:size(ANGLES,1)-1
-    outputLeft(1:2,1:13,idx) = calcGlobalPoseLeft(ANGLES(idx, 2:end), POSITIONS_REF);
+    [outputLeft, comLeft] = calcGlobalPoseLeft(ANGLES(idx, 2:end), POSITIONS_REF, COM_REF);
     
-    outputRight(1:2,1:13,idx) = calcGlobalPoseRight(ANGLES(idx, 2:end), POSITIONS_REF);
+    [outputRight, comRight] = calcGlobalPoseRight(ANGLES(idx, 2:end), POSITIONS_REF, COM_REF);
 
     % if heels or toes are bellow, then switch 
     if (sign(dang(idx)) ~= sign(dang(idx+1)))
         stateLeft = ~stateLeft;
+        switchFrames = [ switchFrames, idx ];
     end
     if stateLeft
-        output = outputLeft(:,:,idx);
+        output = outputLeft;
+        com = comLeft;
     else
-        output = outputRight(:,:,idx);
+        output = outputRight;
+        com = comRight;
     end
     
-    visualize(output, idx);
+    visualize(output, com, idx);
     
     output_positions = vertcat(output_positions, output);
+    com_positions = vertcat(com_positions, com);
     
-    pause(0.05);
+    pause(0.01);
 end
 
 
@@ -53,34 +69,30 @@ end
 
 % Set time vector and loop variables
 output_velocities = [];
+com_velocities = [];
 time = ANGLES(:, 1);
-j = 1;
 
-
-
-for i = 1:size(output_positions,1)/2 - 1       
+for id = 1:size(output_positions,1)/2 - 1       
         
     % Vectors of position on a given time
-    position_1 = output_positions(j:j + 1, :);
-    position_2 = output_positions(j + 2:j +3, :);
-
+    position_1 = output_positions((2*id-1):2*id, :);
+    position_2 = output_positions((2*id+1):(2*id+2), :);
+    
+    c_position_1 = com_positions((2*id-1):2*id, :);
+    c_position_2 = com_positions((2*id+1):(2*id+2), :);
 
     % Time values to the corresponding positions
-    time_1 = time(i, 1);
-    time_2 = time(i + 1, 1);
+    time_1 = time(id, 1);
+    time_2 = time(id + 1, 1);
 
 
     % Velocity calculation for X and Y components
     vel_output = velocity(position_1, position_2, time_1, time_2);
-
+    c_vel = velocity(c_position_1, c_position_2, time_1, time_2);
 
     % Store velocity values
     output_velocities = vertcat(output_velocities, vel_output);
-    
-    
-    % Jumper for position vector
-    j = i * 2;
-    
+    com_velocities = vertcat(com_velocities, c_vel);
 end
 
 
@@ -88,34 +100,30 @@ end
 
 % Set time vector and loop variables
 output_accelerations = [];
-j = 1;
+com_accelerations = [];
 
-
-
-for i = 1:size(output_velocities,1)/2-1
+for id = 1:size(output_velocities,1)/2-1
         
         
     % Vectors of position on a given time
-    vel_1 = output_velocities(j:j + 1, :);
-    vel_2 = output_velocities(j + 2:j +3, :);
+    vel_1 = output_velocities((2*id-1):2*id, :);
+    vel_2 = output_velocities((2*id+1):(2*id+2), :);
 
+    c_vel_1 = com_velocities((2*id-1):2*id, :);
+    c_vel_2 = com_velocities((2*id+1):(2*id+2), :);
 
     % Time values to the corresponding positions
-    time_1 = time(i, 1);
-    time_2 = time(i + 1, 1);
+    time_1 = time(id, 1);
+    time_2 = time(id + 1, 1);
 
 
     % Velocity calculation for X and Y components
-    accel_output = acceleration(vel_1, vel_1, time_1, time_2);
-
+    accel_output = acceleration(vel_1, vel_2, time_1, time_2);
+    c_accel = acceleration(c_vel_1, c_vel_2, time_1, time_2);
 
     % Store velocity values
     output_accelerations = vertcat(output_accelerations, accel_output);
-        
-
-    
-    % Jumper for position vector
-    j = i * 2;
+    com_accelerations = vertcat(com_accelerations, c_accel);
     
 end
 

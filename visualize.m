@@ -1,10 +1,12 @@
-function visualize(calcGlobalPoseOutput, frame)
+function visualize(calcGlobalPoseOutput, calcGlobalPoseCOM, frame)
 
     x = calcGlobalPoseOutput(1, :);
     y = calcGlobalPoseOutput(2, :);
     
     
     scatter(x, y, 'X')
+    hold on
+    scatter(calcGlobalPoseCOM(1,:),calcGlobalPoseCOM(2,:),'o')
     %body visualization
     line([x(1) x(2)], [y(1) y(2)])
     line([x(3) x(2)], [y(3) y(2)])
@@ -27,6 +29,7 @@ function visualize(calcGlobalPoseOutput, frame)
     line([x(11) x(12)], [y(11) y(12)])
     line([x(11) x(13)], [y(11) y(13)])
     title(frame)
+    legend('joints position','com position','body segments')
     axis([-250 250 -50 450])
-   
+    hold off
 end
