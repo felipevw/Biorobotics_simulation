@@ -3,8 +3,8 @@
 % ang - input angle matrix, 8 angles
 % coordinate - position, respect to the reference frame
 
-function fi = rot(ang)
+function R = rot(ang)
     
-    fi = [cos(ang) -sin(ang);
+    R = [cos(ang) -sin(ang);
         sin(ang) cos(ang)];
 end

@@ -19,22 +19,22 @@ POSITIONS_REF = [0, 72;
                 -14, -12.1; 
                 58, -12.1; 
                 58, -12.1];
- 
+ COM_REF = [0, 16.4;
+           0, -55;
+           0, -55;
+           2.3, -39;
+           2.3, -39;
+           1.1, -35.8;
+           1.1, -35.8;
+           16.7, -2.4;
+           16.7, -2.4];
 output_positions = [];
 % The ANGLES(1, 2:end) is taking the first frame
 for idx = 1:size(ANGLES,1)
-    outputLeft = calcGlobalPoseLeft(ANGLES(idx, 2:end), POSITIONS_REF);
+    [output, outputCom]= calcGlobalPose(ANGLES(idx, 2:end), POSITIONS_REF, COM_REF);
        
-    outputRight = calcGlobalPoseRight(ANGLES(idx, 2:end), POSITIONS_REF);
     
-    % if heels or toes are bellow, then switch 
-    if (outputLeft(2,10) <= outputLeft(2,8) || outputLeft(2,9) <= outputLeft(2,7))
-        output = outputRight;
-    else
-        output = outputLeft;
-    end
-    
-    visualize(output);
+    visualize(output, outputCom, idx);
     
     output_positions = vertcat(output_positions, output);
     

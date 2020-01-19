@@ -35,12 +35,11 @@ com_positions = [];
 stateLeft = true;
 switchFrames = 1;
 dang = ANGLES(:,6) - ANGLES(:,7) - 0.05;
-figure
 % The ANGLES(1, 2:end) is taking the first frame
 for idx = 1:size(ANGLES,1)-1
-    [outputLeft, comLeft] = calcGlobalPoseLeft(ANGLES(idx, 2:end), POSITIONS_REF, COM_REF);
+    [outputLeft, comLeft] = calcGlobalPose2(ANGLES(idx, 2:end), POSITIONS_REF, COM_REF);
     
-    [outputRight, comRight] = calcGlobalPoseRight(ANGLES(idx, 2:end), POSITIONS_REF, COM_REF);
+    [outputRight, comRight] = calcGlobalPose1(ANGLES(idx, 2:end), POSITIONS_REF, COM_REF);
 
     % if heels or toes are bellow, then switch 
     if (sign(dang(idx)) ~= sign(dang(idx+1)))
@@ -50,17 +49,17 @@ for idx = 1:size(ANGLES,1)-1
     if stateLeft
         output = outputLeft;
         com = comLeft;
+        text = 'L';
     else
         output = outputRight;
         com = comRight;
+        text = 'R';
     end
     
-    visualize(output, com, idx);
+    %visualize(output, com, [num2str(idx) text]);
     
     output_positions = vertcat(output_positions, output);
     com_positions = vertcat(com_positions, com);
-    
-    pause(0.01);
 end
 
 
@@ -72,10 +71,10 @@ output_velocities = [];
 com_velocities = [];
 time = ANGLES(:, 1);
 
-for id = 1:size(output_positions,1)/2 - 1       
+for id = 1:size(output_positions,1)/2-1       
         
     % Vectors of position on a given time
-    position_1 = output_positions((2*id-1):2*id, :);
+    position_1 = output_positions((2*id-1):(2*id), :);
     position_2 = output_positions((2*id+1):(2*id+2), :);
     
     c_position_1 = com_positions((2*id-1):2*id, :);
@@ -127,14 +126,22 @@ for id = 1:size(output_velocities,1)/2-1
     
 end
 
+p_ZMP = [];
+figure
+for id = 1:size(output_accelerations,1)/2
+    pos = output_positions((2*id - 1):2*id,:);
+    c_pos = com_positions((2*id - 1):2*id,:);
+    c_acc = com_accelerations((2*id -1):2*id,:);
+    p_zmp = zmp(c_pos,c_acc, MASS);
+    p_ZMP = [p_ZMP p_zmp(1)];  
+    visualize(pos,c_pos,p_zmp,id);
+    pause(0.05);
+end
 
-
-
-
-
-
-
-
-
-
-
+figure
+plot(p_ZMP)
+hold on
+for l = 2:length(switchFrames)
+    xline(switchFrames(l), '--r')
+end
+hold off

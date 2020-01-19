@@ -10,8 +10,8 @@
 
 function accel_output = acceleration(vel_1, vel_2, time_1, time_2)
 
-    delta_time = abs(time_1 - time_2);
-    delta_vel = abs(vel_1 - vel_2);
+    delta_time = time_2 - time_1;
+    delta_vel = vel_2 - vel_1;
     accel_output = delta_vel / delta_time;
 
 end
