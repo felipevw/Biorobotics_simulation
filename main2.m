@@ -7,6 +7,7 @@
 % Jakub Pawel Galik
 
 % Variables definition
+close all;
 dataset = load("2DRobot_JointAngles.mat");
 ANGLES = dataset.JointAngles;
 POSITIONS_REF = [0, 72; 
@@ -132,15 +133,17 @@ for id = 1:size(output_accelerations,1)/2
     pos = output_positions((2*id - 1):2*id,:);
     c_pos = com_positions((2*id - 1):2*id,:);
     c_acc = com_accelerations((2*id -1):2*id,:);
-    p_zmp = zmp(c_pos,c_acc, MASS);
-    p_ZMP = [p_ZMP p_zmp(1)];  
-    visualize(pos,c_pos,p_zmp,id);
+    p_ZMP = [p_ZMP zmp(c_pos,c_acc, MASS)];
+    visualize(pos,c_pos,p_ZMP(end),id);
     pause(0.05);
 end
 
 figure
-plot(p_ZMP)
+x = 1:1:length(p_ZMP);
+plot(x(abs(p_ZMP) <100), p_ZMP(abs(p_ZMP)<100))
 hold on
+yline(0);
+yline(72);
 for l = 2:length(switchFrames)
     xline(switchFrames(l), '--r')
 end
